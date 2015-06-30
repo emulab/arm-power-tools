@@ -1,8 +1,12 @@
+# Records the current (in amps) on the cartridge
+# Author: Dmitry Duplyakin (dmitry.duplyakin@colorado.edu)
+
 import time
 import datetime
 import os
 import subprocess
 import re
+import socket
 
 if os.geteuid() != 0:
     exit("You need to have root privileges to run this script.\nPlease try again, this time using 'sudo'. Exiting.")
@@ -14,10 +18,7 @@ record = ""
 record += str(time.time())
 record += "," + str(datetime.datetime.now())
 
-#VIN_cmd = "ipmi-raw --no-probing --driver-type=SSIF --driver-address=0x10 --driver-device=/dev/i2c-0 0 6 0x52 0x05 0x40 0x01 0x88"
-#VIN_proc = subprocess.Popen(VIN_cmd.split(), stdout=subprocess.PIPE)
-#VIN_out = VIN_proc.communicate()[0]
-#print VIN_out
+record += "," + socket.getfqdn()
 
 IOUT_cmd = "ipmi-raw --no-probing --driver-type=SSIF --driver-address=0x10 --driver-device=/dev/i2c-0 0 6 0x52 0x05 0x40 0x02 0x8C"
 IOUT_proc = subprocess.Popen(IOUT_cmd.split(), stdout=subprocess.PIPE)
@@ -30,7 +31,7 @@ if re_flag:
   # switch two last hex pairs in order
   IOUT_list = IOUT_str.split(' ')
   IOUT_hex = str(IOUT_list[4])+ str(IOUT_list[3])
-  # conversion to volts
+  # conversion to amps
   IOUT = int(IOUT_hex,16) * 0.01239 - 25.3717 
   record += "," + str(IOUT)
 else:

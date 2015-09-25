@@ -1,6 +1,8 @@
 #!/bin/bash
 
-LOG=/var/log/power.log
+DIR=/var/log/power
+mkdir $DIR
+LOG=$DIR/`hostname -f`.log
 
 while :
 do

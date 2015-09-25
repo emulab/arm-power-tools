@@ -16,7 +16,7 @@ re_test = re.compile("^rcvd: [A-Z0-9][A-Z0-9] [A-Z0-9][A-Z0-9] [A-Z0-9][A-Z0-9] 
 
 record = ""
 record += str(time.time())
-record += "," + str(datetime.datetime.now())
+record += "," + str(datetime.datetime.utcnow())
 
 record += "," + socket.getfqdn()
 
